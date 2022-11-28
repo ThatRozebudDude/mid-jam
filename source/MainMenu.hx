@@ -27,7 +27,7 @@ import flixel.addons.ui.FlxUITabMenu;
 class MainMenu extends UIStateExt
 {
 
-	static final VERSION = "Test 6";
+	static final VERSION = "Test 7";
 	
 	var menuButtons:Array<FlxSprite> = [];
 	final menuButtonStrings:Array<String> = ["play", "settings", "credits"];
