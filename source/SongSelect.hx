@@ -33,7 +33,7 @@ class SongSelect extends UIStateExt
 {
 
 	final songList:Array<String> = ["tutorial", "earlyMorninBooze", "drunkenDoSiDo"];
-	final songNames:Array<String> = ["Tutorial", "Early Mornin' Booze", "Drunken So-Si-Do"];
+	final songNames:Array<String> = ["Tutorial", "Early Mornin' Booze", "Drunken Do-Si-Do"];
 	static var selected = 0;
 
 	var currAlbum:FlxSprite;

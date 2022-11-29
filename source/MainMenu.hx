@@ -83,10 +83,11 @@ class MainMenu extends UIStateExt
 	override function update(elapsed){
 		super.update(elapsed);
 
+		/* HIDDEN KICKBACK FROM CHAINSAW MAN CHART!!!! didn't wanna include it in the newgrounds build for copyright reasons but you can re-enable it if you want to :]
 		if(FlxG.keys.justPressed.O){
 			PlayState.songName = "kickback";
 			switchState(new PlayState());
-		}
+		}*/
 
 		if(FlxG.keys.anyJustPressed([W, UP])){
 			moveSelection(-1);

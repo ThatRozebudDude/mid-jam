@@ -44,9 +44,11 @@ class Startup extends FlxState
 
 		//used to prevent weird audio issues on html5, idk if its just me but shit gets weird
 		FlxG.sound.play("assets/sounds/silence.ogg");
+	}
 
+	override function update(elapsed){
+		super.update(elapsed);
 		FlxG.switchState(new StartCutscene());
-
 	}
 
 }
