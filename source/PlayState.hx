@@ -71,7 +71,7 @@ class PlayState extends GameplaySongState
 													["laugh", "Here, give it a try!"],
 													["laugh", "Nice one!"],
 													["talk", "I'll just put that on your tab..."],
-													["talk", "Oh, are these friends of yours?"],
+													["talk", "Oh, are these guys friends of yours?"],
 													["laugh", "I suppose it doesn't really matter..."],
 													["talk", "They look thirsty too... Guess I'll need \nto slide over even more drinks!"],
 													["laugh", "Make sure you grab the right drink!"],

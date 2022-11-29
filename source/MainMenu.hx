@@ -27,11 +27,11 @@ import flixel.addons.ui.FlxUITabMenu;
 class MainMenu extends UIStateExt
 {
 
-	static final VERSION = "Test 7";
+	static final VERSION = "1.0 (Game Jam Build)";
 	
 	var menuButtons:Array<FlxSprite> = [];
 	final menuButtonStrings:Array<String> = ["play", "settings", "credits"];
-	var menuSelected = 0;
+	static var menuSelected = 0;
 
 	override public function create()
 	{
@@ -105,6 +105,9 @@ class MainMenu extends UIStateExt
 				case 1:
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
 					switchState(new Settings());
+				case 2:
+					FlxG.sound.play("assets/sounds/catchSound.ogg");
+					switchState(new Credits());
 			}
 		}
 	}

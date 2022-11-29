@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import transition.data.FadeOut;
 import transition.data.FadeIn;
 import transition.data.BasicTransition;
@@ -42,13 +43,15 @@ class Startup extends FlxState
         UIStateExt.defaultTransOut = FadeOut;
         UIStateExt.defaultTransOutArgs = [0.25];
 
-		//used to prevent weird audio issues on html5, idk if its just me but shit gets weird
-		FlxG.sound.play("assets/sounds/silence.ogg");
+		new FlxTimer().start(0.1, function(t){
+			FlxG.switchState(new StartCutscene());
+		});
 	}
 
 	override function update(elapsed){
 		super.update(elapsed);
-		FlxG.switchState(new StartCutscene());
+		//used to prevent weird audio issues on html5, idk if its just me but shit gets weird
+		FlxG.sound.play("assets/sounds/emptyMiss.ogg", 0.1);
 	}
 
 }

@@ -26,7 +26,7 @@ class Main extends Sprite
 		
 		fpsDisplay = new FPS(10, 3, 0xFFFFFF);
 		fpsDisplay.visible = true;
-		addChild(fpsDisplay);
+		//addChild(fpsDisplay);
 		
 	}
 }
