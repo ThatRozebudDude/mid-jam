@@ -1,40 +1,27 @@
 package;
 
-import flixel.text.FlxText;
-import transition.data.BasicTransition;
-import flixel.system.FlxSound;
-import openfl.desktop.ClipboardFormats;
-import openfl.desktop.Clipboard;
-import haxe.ds.ArraySort;
-import flixel.ui.FlxButton;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
-import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUIInputText;
-import flixel.addons.ui.FlxUI;
-import lime.ui.FileDialogType;
-import lime.ui.FileDialog;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxSort;
-import flixel.addons.ui.FlxUITabMenu;
 
 class Credits extends UIStateExt
 {
 	
 	var guys:FlxSprite;
 	var curGuy:Int = 0;
+	static final links:Array<String> = [
+								"https://dojimadog.newgrounds.com/",
+								"https://thatrozebudguy.newgrounds.com/",
+								"https://elikapika.newgrounds.com/",
+								"https://j4ds.newgrounds.com/",
+								"https://cval.newgrounds.com/",
+								"https://crocid.newgrounds.com/",
+								];
 
 	override public function create()
 	{
 		super.create();
 
-		var bg = new FlxSprite().loadGraphic("assets/images/bg.png");
+		var bg = new FlxSprite().loadGraphic("assets/images/stages/bar/bg.png");
 		var backButton = new FlxSprite().loadGraphic("assets/images/pressEscape.png");
 
 		guys = new FlxSprite().loadGraphic("assets/images/creditsGuys.png", true, 576, 324);
@@ -44,6 +31,8 @@ class Credits extends UIStateExt
 		add(bg);
 		add(guys);
 		add(backButton);
+
+		Achievements.unlock("thanks");
 
 	}
 
@@ -55,13 +44,14 @@ class Credits extends UIStateExt
 			switchState(new MainMenu());
 		}
 
-		if(FlxG.keys.anyJustPressed([W, UP, D, RIGHT, SPACE, ENTER])){
+		if(FlxG.keys.justPressed.ENTER){
+			FlxG.openURL(links[curGuy]);
+		}
+		else if(FlxG.keys.anyJustPressed([W, UP, D, RIGHT, SPACE])){
 			moveSelection(1);
-			FlxG.sound.play("assets/sounds/catchSound.ogg");
 		}
 		else if(FlxG.keys.anyJustPressed([S, DOWN, A, LEFT])){
 			moveSelection(-1);
-			FlxG.sound.play("assets/sounds/catchSound.ogg");
 		}
 	}
 
@@ -70,6 +60,7 @@ class Credits extends UIStateExt
 		if(curGuy < 0) { curGuy = 5; }
 		if(curGuy > 5) { curGuy = 0; }
 		guys.animation.frameIndex = curGuy;
+		FlxG.sound.play("assets/sounds/catchSound.ogg");
 	}
 
 }

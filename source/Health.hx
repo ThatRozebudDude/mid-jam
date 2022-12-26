@@ -1,6 +1,6 @@
 package;
 
-import flixel.tweens.FlxEase;
+import openfl.Assets;
 import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -16,15 +16,25 @@ class Health extends FlxSpriteGroup
 
 	var hpIcons:Array<FlxSprite> = new Array<FlxSprite>();
 
+    var iconPath:String = "assets/images/hud/healthIndicator.png";
+    var starPath:String = "assets/images/hud/healthStar.png";
+
 	public function new(_x:Float, _y:Float, _maxHealth:Int)
 	{
         super(_x, _y);
+
+        if(Assets.exists("assets/images/stages/" + PlayState.stage + "/hudSkin/healthIndicator.png")){
+            iconPath = "assets/images/stages/" + PlayState.stage + "/hudSkin/healthIndicator.png";
+        }
+        if(Assets.exists("assets/images/stages/" + PlayState.stage + "/hudSkin/healthStar.png")){
+            starPath = "assets/images/stages/" + PlayState.stage + "/hudSkin/healthStar.png";
+        }
 
         maxHealth = _maxHealth;
         curHealth = maxHealth;
 
         for(i in 0...maxHealth){
-            var icon = new FlxSprite(i * 37, 0).loadGraphic("assets/images/healthIndicator.png", true, 35, 35);
+            var icon = new FlxSprite(i * 37, 0).loadGraphic(iconPath, true, 35, 35);
             icon.animation.add("full", [0], 0, false);
             icon.animation.add("empty", [1], 0, false);
             icon.animation.play("full");
@@ -38,7 +48,7 @@ class Health extends FlxSpriteGroup
         curHealth--;
         updateHpIcons();
 
-        var starFlyAway = new FlxSprite(hpIcons[curHealth].x - 8, hpIcons[curHealth].y - 8).loadGraphic("assets/images/healthStar.png");
+        var starFlyAway = new FlxSprite(hpIcons[curHealth].x - 8, hpIcons[curHealth].y - 8).loadGraphic(starPath);
         add(starFlyAway);
 
         starFlyAway.acceleration.y = FlxG.random.float(360, 430);

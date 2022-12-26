@@ -1,9 +1,8 @@
 package;
 
 import flixel.system.FlxSound;
-import flixel.FlxG;
 
-//hi mr muffin i did not steam your code :]
+//hi mr muffin i did not steal your code :]
 class Conductor
 {
 	private static var __bpm:Float = 100;

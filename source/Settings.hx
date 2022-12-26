@@ -2,38 +2,12 @@ package;
 
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import transition.data.StrangeExpandIn;
 import flixel.text.FlxText;
-import flixel.input.keyboard.FlxKey;
-import transition.data.BasicTransition;
-import flixel.system.FlxSound;
-import openfl.desktop.ClipboardFormats;
-import openfl.desktop.Clipboard;
-import haxe.ds.ArraySort;
-import flixel.ui.FlxButton;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
-import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUIInputText;
-import flixel.addons.ui.FlxUI;
-import lime.ui.FileDialogType;
-import lime.ui.FileDialog;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxSort;
-import flixel.addons.ui.FlxUITabMenu;
 
 class Settings extends UIStateExt
 {
-
-	public static var binds:Array<FlxKey> = [FlxKey.C, FlxKey.X, FlxKey.Z];
-
 	var mode = "select";
 	var bindNumber = 0;
 
@@ -52,8 +26,8 @@ class Settings extends UIStateExt
 	{
 		super.create();
 
-		var bg = new FlxSprite().loadGraphic("assets/images/bg.png");
-		var bar = new FlxSprite().loadGraphic("assets/images/counter.png");
+		var bg = new FlxSprite().loadGraphic("assets/images/stages/bar/bg.png");
+		var bar = new FlxSprite().loadGraphic("assets/images/stages/bar/counter.png");
 		var backButton = new FlxSprite().loadGraphic("assets/images/pressEscape.png");
 
 		var instructions = new FlxText(0, 32, 0, "PRESS THE KEY YOU WANT TO REBIND", 16);
@@ -61,9 +35,9 @@ class Settings extends UIStateExt
 		instructions.borderSize = 3;
 		instructions.screenCenter(X);
 
-		guyRed = new Character(0, 133, "assets/images/guyRed.png", 150, 142);
-		guyBlue = new Character(0, 90, "assets/images/guyBlue.png", 171, 184);
-		guyGreen = new Character(0, 72, "assets/images/galGreen.png", 175, 200);
+		guyRed = new Character(0, 123, "assets/images/characters/donny/body.png");
+		guyBlue = new Character(0, 80, "assets/images/characters/johnny/body.png");
+		guyGreen = new Character(0, 62, "assets/images/characters/olive/body.png");
 		guyRed.x = (FlxG.width/4)*3 - (guyRed.width/2) + 40;
 		guyBlue.x = FlxG.width/2 - guyBlue.width/2;
 		guyGreen.x = (FlxG.width/4) - (guyGreen.width/2) - 40;
@@ -76,7 +50,7 @@ class Settings extends UIStateExt
 		overlay.visible = false;
 		pressToRebind.visible = false;
 
-		redBindText = new FlxText(0, 0, 0, "["+binds[0].toString().toUpperCase()+"]", 24);
+		redBindText = new FlxText(0, 0, 0, "["+SaveData.binds[0].toString().toUpperCase()+"]", 24);
 		redBindText.setFormat(null, 24, 0xFFF2EDE5, LEFT, OUTLINE, 0xFF4F2632);
 		redBindText.borderSize = 3;
 		redBindText.x = (guyRed.getMidpoint().x - redBindText.width/2) - 5;
@@ -84,14 +58,14 @@ class Settings extends UIStateExt
 		FlxTween.tween(redBindText, {y: redBindText.y+5}, Conductor.quarterNoteTime/1000, {ease: FlxEase.sineInOut, type: PINGPONG});
 
 
-		blueBindText = new FlxText(0, 0, 0, "["+binds[1].toString().toUpperCase()+"]", 24);
+		blueBindText = new FlxText(0, 0, 0, "["+SaveData.binds[1].toString().toUpperCase()+"]", 24);
 		blueBindText.setFormat(null, 24, 0xFFF2EDE5, LEFT, OUTLINE, 0xFF4F2632);
 		blueBindText.borderSize = 3;
 		blueBindText.x = (guyBlue.getMidpoint().x - blueBindText.width/2) - 5;
 		blueBindText.y = (FlxG.height/2) + 72;
 		FlxTween.tween(blueBindText, {y: blueBindText.y+5}, Conductor.quarterNoteTime/1000, {ease: FlxEase.sineInOut, type: PINGPONG});
 
-		greenBindText = new FlxText(0, 0, 0, "["+binds[2].toString().toUpperCase()+"]", 24);
+		greenBindText = new FlxText(0, 0, 0, "["+SaveData.binds[2].toString().toUpperCase()+"]", 24);
 		greenBindText.setFormat(null, 24, 0xFFF2EDE5, LEFT, OUTLINE, 0xFF4F2632);
 		greenBindText.borderSize = 3;
 		greenBindText.x = guyGreen.getMidpoint().x - greenBindText.width/2;
@@ -145,7 +119,7 @@ class Settings extends UIStateExt
 				else if(FlxG.keys.anyJustPressed(FlxG.sound.volumeDownKeys.concat(FlxG.sound.volumeUpKeys).concat(FlxG.sound.muteKeys))){}
 				else if(FlxG.keys.justPressed.ANY){
 					var justPressed = FlxG.keys.getIsDown()[0].ID;
-					if(!binds.contains(justPressed)){ binds[bindNumber] = justPressed; }
+					if(!SaveData.binds.contains(justPressed)){ SaveData.binds[bindNumber] = justPressed; }
 					mode = "select";
 					updateText();
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
@@ -168,21 +142,22 @@ class Settings extends UIStateExt
 
 				if(FlxG.keys.justPressed.ESCAPE){
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
+					SaveData.write();
 					switchState(new MainMenu());
 				}
-				else if(FlxG.keys.anyJustPressed([binds[0]])){
+				else if(FlxG.keys.anyJustPressed([SaveData.binds[0]])){
 					mode = "changingBind";
 					bindNumber = 0;
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
 					guyRed.drink();
 				}
-				else if(FlxG.keys.anyJustPressed([binds[1]])){
+				else if(FlxG.keys.anyJustPressed([SaveData.binds[1]])){
 					mode = "changingBind";
 					bindNumber = 1;
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
 					guyBlue.drink();
 				}
-				else if(FlxG.keys.anyJustPressed([binds[2]])){
+				else if(FlxG.keys.anyJustPressed([SaveData.binds[2]])){
 					mode = "changingBind";
 					bindNumber = 2;
 					FlxG.sound.play("assets/sounds/catchSound.ogg");
@@ -193,9 +168,9 @@ class Settings extends UIStateExt
 	}
 
 	function updateText(){
-		redBindText.text = "["+binds[0].toString().toUpperCase()+"]";
-		blueBindText.text = "["+binds[1].toString().toUpperCase()+"]";
-		greenBindText.text = "["+binds[2].toString().toUpperCase()+"]";
+		redBindText.text = "["+SaveData.binds[0].toString().toUpperCase()+"]";
+		blueBindText.text = "["+SaveData.binds[1].toString().toUpperCase()+"]";
+		greenBindText.text = "["+SaveData.binds[2].toString().toUpperCase()+"]";
 		redBindText.x = (guyRed.getMidpoint().x - redBindText.width/2) - 5;
 		blueBindText.x = (guyBlue.getMidpoint().x - blueBindText.width/2) - 5;
 		greenBindText.x = guyGreen.getMidpoint().x - greenBindText.width/2;

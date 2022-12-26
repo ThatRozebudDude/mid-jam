@@ -21,7 +21,7 @@ class Main extends Sprite
 		fpsTarget = 144; //ALL HAIL DESKTOP TARGET!!!!!!!
 		#end
 
-		addChild(new FlxGame(576, 324, Startup, 1, fpsTarget, fpsTarget, true));
+		addChild(new FlxGame(576, 324, Startup, fpsTarget, fpsTarget, true));
 		FlxG.autoPause = false;
 		
 		fpsDisplay = new FPS(10, 3, 0xFFFFFF);

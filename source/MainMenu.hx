@@ -1,36 +1,16 @@
 package;
 
 import flixel.text.FlxText;
-import transition.data.BasicTransition;
-import flixel.system.FlxSound;
-import openfl.desktop.ClipboardFormats;
-import openfl.desktop.Clipboard;
-import haxe.ds.ArraySort;
-import flixel.ui.FlxButton;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
-import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUIInputText;
-import flixel.addons.ui.FlxUI;
-import lime.ui.FileDialogType;
-import lime.ui.FileDialog;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxSort;
-import flixel.addons.ui.FlxUITabMenu;
 
 class MainMenu extends UIStateExt
 {
 
-	static final VERSION = "1.0 (Game Jam Build)";
+	public static final VERSION = "2.0";
 	
 	var menuButtons:Array<FlxSprite> = [];
-	final menuButtonStrings:Array<String> = ["play", "settings", "credits"];
+	final menuButtonStrings:Array<String> = ["play", "achievements", "settings", "credits"];
 	static var menuSelected = 0;
 
 	override public function create()
@@ -61,7 +41,7 @@ class MainMenu extends UIStateExt
 		versionText.y -= versionText.height + 4;
 
 		for(i in 0...menuButtonStrings.length){
-			var button = new FlxSprite(300, 105 + 70*i).loadGraphic("assets/images/menu/" + menuButtonStrings[i] + ".png", true, 200, 50);
+			var button = new FlxSprite(300, 103 + 50*i).loadGraphic("assets/images/menu/" + menuButtonStrings[i] + ".png", true, 200, 44);
 			button.animation.add("off", [0], 0, false);
 			button.animation.add("on", [1], 0, false);
 			button.animation.play("off");
@@ -78,15 +58,17 @@ class MainMenu extends UIStateExt
 			add(x);
 		}
 
+		var dateThing = Date.now();
+		if((dateThing.getDay() == 5 && dateThing.getHours() >= 19) || (dateThing.getDay() == 6 && dateThing.getHours() <= 4)){
+			Achievements.unlock("cam");
+		}
 	}
 
 	override function update(elapsed){
 		super.update(elapsed);
 
-		/* //HIDDEN KICKBACK FROM CHAINSAW MAN CHART!!!! didn't wanna include it in the newgrounds build for copyright reasons but you can re-enable it if you want to :]
-		if(FlxG.keys.justPressed.O){
-			PlayState.songName = "kickback";
-			switchState(new PlayState());
+		/*if(FlxG.keys.justPressed.O){
+			Achievements.unlock("cam", true);
 		}*/
 
 		if(FlxG.keys.anyJustPressed([W, UP])){
@@ -98,17 +80,23 @@ class MainMenu extends UIStateExt
 			FlxG.sound.play("assets/sounds/catchSound.ogg");
 		}
 		else if(FlxG.keys.anyJustPressed([SPACE, ENTER])){
+			FlxG.sound.play("assets/sounds/catchSound.ogg");
 			switch(menuSelected){
 				case 0:
-					FlxG.sound.play("assets/sounds/catchSound.ogg");
 					switchState(new SongSelect());
 				case 1:
-					FlxG.sound.play("assets/sounds/catchSound.ogg");
-					switchState(new Settings());
+					switchState(new AchievementMenu());
 				case 2:
-					FlxG.sound.play("assets/sounds/catchSound.ogg");
+					switchState(new Settings());
+				case 3:
 					switchState(new Credits());
 			}
+		}
+		else if(FlxG.keys.pressed.CONTROL && FlxG.keys.pressed.SHIFT && FlxG.keys.justPressed.R){
+			#if !html5
+			FlxG.sound.play("assets/sounds/catchSound.ogg");
+			SaveData.resetScores();
+			#end
 		}
 	}
 

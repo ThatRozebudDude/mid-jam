@@ -1,40 +1,17 @@
 package;
 
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import transition.data.StrangeExpandIn;
 import flixel.text.FlxText;
-import flixel.input.keyboard.FlxKey;
-import transition.data.BasicTransition;
-import flixel.system.FlxSound;
-import openfl.desktop.ClipboardFormats;
-import openfl.desktop.Clipboard;
-import haxe.ds.ArraySort;
-import flixel.ui.FlxButton;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
-import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUIInputText;
-import flixel.addons.ui.FlxUI;
-import lime.ui.FileDialogType;
-import lime.ui.FileDialog;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxSort;
-import flixel.addons.ui.FlxUITabMenu;
 
 class SongSelect extends UIStateExt
 {
 
-	final songList:Array<String> = ["tutorial", "earlyMorninBooze", "drunkenDoSiDo"];
-	final songNames:Array<String> = ["Tutorial", "Early Mornin' Booze", "Drunken Do-Si-Do"];
+	public static final songList:Array<String> = ["tutorial", "earlyMorninBooze", "drunkenDoSiDo", "moonshineMedley", "christmas", "hereWeGoAgain"];
+	final songNames:Array<String> = ["Tutorial", "Early Mornin' Booze", "Drunken Do-Si-Do", "Moonshine Melody", "Holly Jolly Jivin'", "Here We Go Again"];
 	static var selected = 0;
+	public static var maxCombo:Map<String, Int> = new Map();
+	public static var songHash:Array<String> = [];
 
 	var currAlbum:FlxSprite;
 	var prevAlbum:FlxSprite;
@@ -44,6 +21,7 @@ class SongSelect extends UIStateExt
 	var rightArrow:FlxSprite;
 
 	var songNameText:FlxText;
+	var songComboText:FlxText;
 
 	var started:Bool = false;
 
@@ -57,20 +35,20 @@ class SongSelect extends UIStateExt
 			}
 		}
 
-		var bg = new FlxSprite().loadGraphic("assets/images/bg.png");
+		var bg = new FlxSprite().loadGraphic("assets/images/stages/bar/bg.png");
 		var overlay = new FlxSprite().makeGraphic(600, 600, 0x774F2632);
 		var backButton = new FlxSprite().loadGraphic("assets/images/pressEscape.png");
 
-		currAlbum = new FlxSprite().loadGraphic("assets/images/album/"+songList[keepInRange(selected)]+".png");
+		currAlbum = new FlxSprite().loadGraphic("assets/songs/" + songList[keepInRange(selected)] + "/album.png");
 		currAlbum.screenCenter(XY);
 		
-		prevAlbum = new FlxSprite().loadGraphic("assets/images/album/"+songList[keepInRange(selected-1)]+".png");
+		prevAlbum = new FlxSprite().loadGraphic("assets/songs/" + songList[keepInRange(selected-1)] + "/album.png");
 		prevAlbum.x = currAlbum.x - 110;
 		prevAlbum.scale.set(0.8, 0.8);
 		prevAlbum.screenCenter(Y);
 		prevAlbum.alpha = 0.6;	
 
-		nextAlbum = new FlxSprite().loadGraphic("assets/images/album/"+songList[keepInRange(selected+1)]+".png");
+		nextAlbum = new FlxSprite().loadGraphic("assets/songs/" + songList[keepInRange(selected+1)] + "/album.png");
 		nextAlbum.x = currAlbum.x + currAlbum.width - 70;
 		nextAlbum.scale.set(0.8, 0.8);
 		nextAlbum.screenCenter(Y);
@@ -90,6 +68,14 @@ class SongSelect extends UIStateExt
 		songNameText.screenCenter(X);
 		songNameText.y = (FlxG.height * 0.875) - songNameText.height/2;
 
+		songComboText = new FlxText(0, 0, 0, ""+maxCombo.get(songList[keepInRange(selected)]), 24);
+		songComboText.setFormat(null, 24, 0xFFFBD0B5, LEFT, OUTLINE, 0xFF4F2632);
+		songComboText.borderSize = 3;
+		songComboText.screenCenter(X);
+		songComboText.y = (FlxG.height * 0.125) - songNameText.height/2;
+
+		rotateAlbums();
+
 		add(bg);
 		add(overlay);
 
@@ -100,8 +86,29 @@ class SongSelect extends UIStateExt
 		add(leftArrow);
 		add(rightArrow);
 		add(songNameText);
+		add(songComboText);
 
 		add(backButton);
+
+		//achievement check
+		if(SaveData.scores.get("tutorial").score > 0){
+			Achievements.unlock("beatTutorial");
+		}
+		if(SaveData.scores.get("earlyMorninBooze").score == maxCombo.get("earlyMorninBooze")){
+			Achievements.unlock("fcEMB");
+		}
+		if(SaveData.scores.get("drunkenDoSiDo").score == maxCombo.get("drunkenDoSiDo")){
+			Achievements.unlock("fcDDSD");
+		}
+		if(SaveData.scores.get("hereWeGoAgain").score == maxCombo.get("hereWeGoAgain")){
+			Achievements.unlock("fcHWGA");
+		}
+		if(SaveData.scores.get("moonshineMedley").score == maxCombo.get("moonshineMedley")){
+			Achievements.unlock("liverFailure");
+		}
+		if(SaveData.scores.get("christmas").score == maxCombo.get("christmas")){
+			Achievements.unlock("fcChristmas");
+		}
 
 	}
 
@@ -127,6 +134,19 @@ class SongSelect extends UIStateExt
 				switchState(new PlayState());
 				started = true;
 			}
+
+			if(FlxG.keys.anyPressed([A, LEFT])){
+				leftArrow.scale.set(0.8, 0.8);
+			}
+			else{
+				leftArrow.scale.set(1, 1);
+			}
+			if(FlxG.keys.anyPressed([D, RIGHT])){
+				rightArrow.scale.set(0.8, 0.8);
+			}
+			else{
+				rightArrow.scale.set(1, 1);
+			}
 		}
 		
 	}
@@ -140,12 +160,23 @@ class SongSelect extends UIStateExt
 	function rotateAlbums(change:Int = 0){
 		selected = keepInRange(selected+change);
 
-		currAlbum.loadGraphic("assets/images/album/"+songList[selected]+".png");
-		prevAlbum.loadGraphic("assets/images/album/"+songList[keepInRange(selected-1)]+".png");
-		nextAlbum.loadGraphic("assets/images/album/"+songList[keepInRange(selected+1)]+".png");
+		currAlbum.loadGraphic("assets/songs/" + songList[selected] + "/album.png");
+		prevAlbum.loadGraphic("assets/songs/" + songList[keepInRange(selected-1)] + "/album.png");
+		nextAlbum.loadGraphic("assets/songs/" + songList[keepInRange(selected+1)] + "/album.png");
 
 		songNameText.text = songNames[selected];
 		songNameText.screenCenter(X);
+		
+		if(SaveData.scores.get(songList[selected]).score == maxCombo.get(songList[selected])){
+			songComboText.text = "Full Combo'd!";
+			songComboText.setFormat(null, 24, 0xFFF5BB73, LEFT, OUTLINE, 0xFF4F2632);
+		}
+		else{
+			songComboText.text = "Highest Combo: " + SaveData.scores.get(songList[selected]).score + "/" + maxCombo.get(songList[selected]);
+			songComboText.setFormat(null, 24, 0xFFFBD0B5, LEFT, OUTLINE, 0xFF4F2632);
+		}
+		songComboText.borderSize = 3;
+		songComboText.screenCenter(X);
 	}
 
 }

@@ -3,27 +3,8 @@ package;
 import flixel.util.FlxTimer;
 import flixel.tweens.FlxTween;
 import transition.data.BasicTransition;
-import flixel.system.FlxSound;
-import openfl.desktop.ClipboardFormats;
-import openfl.desktop.Clipboard;
-import haxe.ds.ArraySort;
-import flixel.ui.FlxButton;
-import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUICheckBox;
-import flixel.addons.ui.FlxUINumericStepper;
-import flixel.addons.ui.FlxUIInputText;
-import flixel.addons.ui.FlxUI;
-import lime.ui.FileDialogType;
-import lime.ui.FileDialog;
-import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxState;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import flixel.util.FlxSort;
-import flixel.addons.ui.FlxUITabMenu;
 
 class StartCutscene extends UIStateExt
 {

@@ -1,6 +1,6 @@
 package;
 
-import flixel.tweens.FlxEase;
+import flixel.graphics.FlxGraphic;
 import flixel.math.FlxPoint;
 import flixel.FlxG;
 import flixel.tweens.FlxTween;
@@ -23,12 +23,15 @@ class Character extends FlxSprite
 
     public var drunk:Bool = false;
 
-    override public function new(_x:Float, _y:Float, _path:String, _width:Int, _height:Int){
+    override public function new(_x:Float, _y:Float, _path:String){
         super(_x, _y);
 
         truePos = new FlxPoint(_x, _y);
 
-        loadGraphic(_path, true, _width, _height);
+        var graphic:FlxGraphic = FlxG.bitmap.add(_path);
+        var graphicWidth:Int = Std.int(graphic.width/4);
+
+        loadGraphic(graphic, true, graphicWidth, graphic.height);
         animation.add("idle", [0], 0, false);
         animation.add("miss", [1], 0, false);
         animation.add("drink", [2], 0, false);
