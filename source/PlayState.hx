@@ -677,7 +677,7 @@ class PlayState extends GameplaySongState
 	function sayDialogue(_anim:String, _text:String){
 		tutorialText.text = "";
 		for(i in 0..._text.length){
-			new FlxTimer().start(1/60 * i, function(t){
+			new FlxTimer().start(1/45 * i, function(t){
 				aria.animation.play(_anim);
 				tutorialText.text += _text.charAt(i);
 				if(i == _text.length-1){

@@ -7,7 +7,7 @@ import flixel.FlxSprite;
 class MainMenu extends UIStateExt
 {
 
-	public static final VERSION = "2.0";
+	public static final VERSION = "2.1";
 	
 	var menuButtons:Array<FlxSprite> = [];
 	final menuButtonStrings:Array<String> = ["play", "achievements", "settings", "credits"];
